@@ -1,0 +1,54 @@
+.comboContainer{
+    display: flex;
+    flex-direction: column;
+    width: 75%;
+    height: 85%;
+    margin: 23px 30px 0 30px;
+    padding: 11px;
+    background-color: rgb(255, 255, 255);
+    border-radius: 10px;
+    box-shadow: inset 0px 4px 10px rgba(0, 0, 0, 0.20);
+    border: 1px solid rgba(80,80,80, 0.2);
+    background-image: url("wallpaper.png");
+    align-items: center;
+    
+    background-size: 80%;
+    overflow: auto;
+
+
+
+}
+.comboAdd{
+    display: inline-flex;
+    position: absolute;
+	bottom: 65px;
+	right: 27.5%;
+	transition: all 300ms ease 0ms;
+	justify-content: center;
+	z-index: 99;
+
+    cursor: pointer;
+	font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: small;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    font-weight: bold;
+    margin: 0 0 0 10px;
+    padding: 5px;
+    border: 1px solid rgba(80,80,80, 0.3);
+    border-radius: 10px;
+    box-shadow: -5px 5px 5px rgba(105, 78, 78, 0.7);
+   
+    
+    color: rgb(230,0,18);
+    background-color: white;
+    transition: all 0.2s;
+}
+.comboAdd:hover{
+    color: white;
+    background-color: rgb(255, 153, 0);
+    
+    transition: all 0.2s;
+    font-size: medium;
+}

@@ -1,0 +1,111 @@
+.combo{
+   display: flex;
+   width: 97%;
+   height: 200px;
+   margin-bottom: 35px;
+
+   padding:10px;
+   
+   border-radius: 10px;
+   background-color: white;
+   box-shadow: -5px 5px 5px rgba(105, 78, 78, 0.2);
+   justify-content: center;
+   align-items: center;
+   border: 1px solid rgba(80,80,80, 0.2);
+}
+.comboFrame{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    background-color: rgba(230,0,18,0.9);
+    border-radius: 10px;
+    box-shadow: inset 4px 4px 20px rgba(66, 1, 1, 0.4);
+    border: 1px solid rgba(80,80,80, 0.3);
+    background-image: url("wallpaper.png");
+    
+}
+.data{
+    display: flex;
+    width: 20%;
+    align-items: center;
+    font-weight: bolder;
+    font-size: small;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    color: rgb(230,0,18);
+    background-color: white;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: -5px 5px 5px rgba(105, 78, 78, 0.5);
+
+    
+    
+}
+.emptyCombo{
+    display: flex;
+    width: 220px;
+    height: 5px;
+    align-items: center;
+    justify-content: center;
+    font-weight: bolder;
+    font-size: small;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    color: rgb(92, 92, 92);
+    background-color: white;
+    border-radius: 20px;
+    padding: 10px;
+    box-shadow: inset 3px 3px 4px rgba(66, 1, 1, 0.4);
+    
+}
+.data--pointer{
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.data--pointer:hover{
+    opacity: 70%;
+    
+}
+.topContainer{
+    display: flex;
+    flex-direction: row;
+    
+    height: 14%;
+    margin: 10px;
+    margin-bottom: 0;
+    justify-content: space-around;
+}
+.coin{
+    width: 20%;
+}
+.button{
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    color: rgb(230,0,18);
+    background-color: white;
+    border-radius: 10px;
+    border: none;
+    box-shadow: -5px 5px 5px rgba(105, 78, 78, 0.5);
+    font-weight: bolder;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 80%;
+}
+.button:hover{
+    font-size: 90%;
+}
+.productContainerCombo{
+    display: flex;
+    flex-direction: row;
+    height: 71%;
+    width: 97%;
+    margin: 0;
+    padding: 10px;
+    justify-content: flex-start;
+    overflow: auto;
+    
+    
+}
+.productContainerCombo--empty{
+    justify-content: center;
+    align-items: center;
+}
