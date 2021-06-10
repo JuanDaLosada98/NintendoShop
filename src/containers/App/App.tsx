@@ -1,15 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NintendoSwitchProduct } from '../../components/NintendoSwitchProduct/NintendoSwitchProduct';
-import { HashRouter, Link, Route } from 'react-router-dom';
+import { HashRouter } from 'react-router-dom';
 import './App.css';
 import { ComboContainer } from '../ComboContainer/ComboContainer';
 import { ComboProps } from '../../components/Combo/Combo';
 import { Summary } from '../../components/Summary/Summary';
 import { ClientModal } from '../../components/ClientModal/ClientModal';
 import { CreatedCombos } from '../../components/CreatedCombos/CreatedCombos';
-
-
-
 
 
 const consoleImageUrl = '/images/console_images/';
@@ -24,6 +21,7 @@ export interface productNintendo {
     id: string | number;
     image: string;
     type?: 'Nintendo Switch Game' | 'Nintendo Switch Console' | 'Joy Con Set' | 'Nintendo Switch Accesories' | 'Left Joy Con' | 'Right Joy Con' ,
+    count?: number,
     joyConSet?: boolean;
 }
 
@@ -605,6 +603,7 @@ const products: productNintendo[] = [
     },
 ]
 
+/*
 const switchProducts = [
     {
         id: 0,
@@ -1188,18 +1187,15 @@ const switchAccesories = [
 
     },
 ]
-
+*/
 
 const initialCombo = {
-    id: Date.now(),
+    
     comboTotal: 0,
     client: '',
     deleted: false,
     products: [] as productNintendo[],
-   
-
 }
-
 export const App = () => {
 
     const [chosenConsole, setChosenConsole] = React.useState(true);
@@ -1214,9 +1210,10 @@ export const App = () => {
     const [addMessageSwitch, setAddMessageSwitch] = React.useState(true);
     const [productType, setProductType] = React.useState('Nintendo Switch Console');
     const [productFiltered, setProductFiltered] = React.useState(products);
-    const [numberOfProducts, setNumberOfProducts] = React.useState(0);
+    const [isEdit, setIsEdit] = React.useState(false);
    
 
+    
     React.useEffect(() => {
         if (productType === '') {
             setProductFiltered(products);
@@ -1224,7 +1221,7 @@ export const App = () => {
             setProductFiltered(prev =>
                 [...products.filter((item) => item.type === productType)])
         }
-    }, [productType, products])
+    }, [productType])
 
     /*
     const handleDelete= (id: number) => {
@@ -1237,6 +1234,17 @@ export const App = () => {
     }
     
     */
+
+    const changeProductCount = (name:string, price:number, amount:number) => {
+        let temp = editCombo!;
+        temp.comboTotal += price*amount;
+
+        let productsTemp = temp.products;
+        const currentProduct = productsTemp.find((listProduct) => listProduct.name === name);
+        currentProduct!.count = currentProduct!.count! + amount;
+
+        setEditCombo({...temp, products: productsTemp})
+    }
 
     const handleChoseConsole = () => {
         setChosenConsole(true);
@@ -1274,27 +1282,39 @@ export const App = () => {
     const handleAddCombo = () => {
         setAddMessage(false);
         setAddMessageSwitch(false);
+        setIsEdit(true);
         setShowModal(true);
-        setEditCombo(prev => ({
+        setEditCombo(({
             ...initialCombo,
+            products: [],
             id: Date.now(),
-
-
         }));
-
-
+       
+      
     }
+
+    const handleEditCombo = (comboChange: ComboProps) => {
+        setAddMessageSwitch(false);
+        setIsEdit(true);
+        let temp = combo;
+        const filteredTemp = temp.filter((listCombo) => listCombo.id !== comboChange.id);
+        
+        setCombo(filteredTemp);
+        setEditCombo(comboChange);
+       
+    }
+
     const handleConfirmCombo = () => {
-        console.log(combo.length);
+        
         editCombo!.confirm = true;
         setCombo(prev => ([
             ...prev,
             editCombo!,
-
-
         ]));
         setEditCombo(null);
+        console.log('Confirm' ,editCombo);
         setAddMessageSwitch(true);
+        setIsEdit(false);
        
     }
 
@@ -1340,8 +1360,15 @@ export const App = () => {
         
         if (editCombo) {
             let temp = editCombo;
-            let productsTemp = [...editCombo.products, product]
-            
+            temp.comboTotal += product.price;
+            let productsTemp = editCombo.products;
+            const filteredList = editCombo.products.filter((listProduct) => listProduct.name === product.name);
+            if(filteredList.length === 0) {
+                product.count = 1;
+                productsTemp.push(product);
+            } else if(filteredList.length === 1) { 
+                filteredList[0].count = filteredList[0].count! + 1;
+            }
 
             setEditCombo({...temp, products: productsTemp})
         }
@@ -1349,8 +1376,11 @@ export const App = () => {
     const handleDeleteProductsToCombo = (product: productNintendo) => {
         
         console.log(product);
+        console.log("count"+product.count)
+        
         if (editCombo) {
             let temp = editCombo;
+            temp.comboTotal = temp.comboTotal - (product.price*product.count!);
             let productsTemp = editCombo.products.filter(item => item.id !== product.id)
             
 
@@ -1358,115 +1388,155 @@ export const App = () => {
         }
     }
    
-      
+    const handleDeleteCombo = (comboChange: ComboProps) => {
+        
+        let temp = combo;
+        const filteredTemp = temp.filter((listCombo) => listCombo.id !== comboChange.id);
+        setCombo(filteredTemp);
+        setAddMessageSwitch(true);
+        
+       
+        console.log(combo.length)
+        
+        
+    }
+    const handleDeleteEditCombo = (comboChange: ComboProps) => {
+        setIsEdit(false);
+        setEditCombo(null);
+        setAddMessageSwitch(true);
+        
+        
+    }
+
+    useEffect(( ) => {
+        if(combo.length===0 && !editCombo){
+            setAddMessage(true);
+        }
+    }, [combo, editCombo])
+
+    const handleClean = () => {
+        setCombo([]);
+    }
     
-    return (<main className="mainContainer">
+    return (
+        <main className="mainContainer">
+        
 
-        <HashRouter>
+        
+            <HashRouter>
 
-            <header className="header">
-                <div className="headerLogo">
-                    <img src="/images/data/logonintendo.png" alt="" className="logoNintendo" />
-                    <img src="/images/data/supermario.png" alt="" />
-                </div>
-                <div className="headerCenter">
-                    <img src="/images/data/headerCenter.png" alt="" className="headerImgCenter" />
-                </div>
-                <div className="headerRight">
-                    <button className="button2">
+                <header className="header">
+                    <div className="headerLogo">
+                        <img src="/images/data/logonintendo.png" alt="" className="logoNintendo" />
+                        <img src="/images/data/supermario.png" alt="" />
+                    </div>
+                    <div className="headerCenter">
+                        <img src="/images/data/headerCenter.png" alt="" className="headerImgCenter" />
+                    </div>
+                    <div className="headerRight">
+                        <button onClick={handleClean} className="button2">
 
-                        <img src="/images/data/yoshi.gif" alt="" className="imagen" />
-                         Limpiar
-                         <img src="/images/data/yoshi.gif" alt="" className="imagen" />
+                            <img src="/images/data/yoshi.gif" alt="" className="imagen" />
+                            Limpiar
+                            <img src="/images/data/yoshi.gif" alt="" className="imagen" />
 
-                    </button>
-                </div>
-            </header>
-            <div className="optionSummaryC">
+                        </button>
+                    </div>
+                </header>
+                <div className="optionSummaryC">
 
-                <div className="options">
+                    <div className="options">
 
-                    <button onClick={handleChoseConsole} className={`option ${chosenConsole ? 'option--chose' : ''}`} >
-                        <img className="optionStyle" src="/images/product_images/console.png" alt="" />
-                        Consolas
-                    </button>
-                    <div className={`progresionLine ${chosenGame ? 'progresionLine--passed' : ''}`}></div>
-                    <button onClick={handleChoseGame} className={`option ${chosenGame ? 'option--chose' : ''}`} >
-                        <img className="optionStyle" src="/images/product_images/game.png" alt="" />
-                        Juegos
-                    </button>
-                    <div className={`progresionLine2 ${chosenHardware ? 'progresionLine2--passed' : ''}`}></div>
-                    <button onClick={handleChoseHardware} className={`option ${chosenHardware ? 'option--chose' : ''}`}>
-                        <img className="optionStyle" src="/images/product_images/controls.png" alt="" />
-                        Joy-Cons
-                    </button>
-                    <div className={`progresionLine3 ${chosenAccesories ? 'progresionLine3--passed' : ''}`}></div>
-                    <button onClick={handleChoseAccesories} className={`option ${chosenAccesories ? 'option--chose' : ''}`} >
-                        <img className="optionStyle" src="/images/product_images/accesories.png" alt="" />
-                        Accesorios
-                    </button>
+                        <button onClick={handleChoseConsole} className={`option ${chosenConsole ? 'option--chose' : ''}`} >
+                            <img className="optionStyle" src="/images/product_images/console.png" alt="" />
+                            Consolas
+                        </button>
+                        <div className={`progresionLine ${chosenGame ? 'progresionLine--passed' : ''}`}></div>
+                        <button onClick={handleChoseGame} className={`option ${chosenGame ? 'option--chose' : ''}`} >
+                            <img className="optionStyle" src="/images/product_images/game.png" alt="" />
+                            Juegos
+                        </button>
+                        <div className={`progresionLine2 ${chosenHardware ? 'progresionLine2--passed' : ''}`}></div>
+                        <button onClick={handleChoseHardware} className={`option ${chosenHardware ? 'option--chose' : ''}`}>
+                            <img className="optionStyle" src="/images/product_images/controls.png" alt="" />
+                            Joy-Cons
+                        </button>
+                        <div className={`progresionLine3 ${chosenAccesories ? 'progresionLine3--passed' : ''}`}></div>
+                        <button onClick={handleChoseAccesories} className={`option ${chosenAccesories ? 'option--chose' : ''}`} >
+                            <img className="optionStyle" src="/images/product_images/accesories.png" alt="" />
+                            Accesorios
+                        </button>
 
-                </div>
-                <div className="summary">
-                    <Summary></Summary>
-                </div>
-            </div>
-            <div className="container">
-
-                <ComboContainer
-                    onAdd={handleAddCombo}
-                    combo={combo}
-                    editCombo={editCombo}
-                    onConfirm={handleConfirmCombo}
-                    addMessage={addMessage}
-                    changeName={changeName}
-                    handleDeleteProduct={handleDeleteProductsToCombo}
-
-                >
-
-                </ComboContainer>
-
-                <div className="containerProducts">
-
-                    {productFiltered.map(({ type, name, price, id, image }) => {
-
-                        return <NintendoSwitchProduct
-                            id={id}
-                            key={id}
-                            type={type}
-                            name={name}
-                            price={price}
-                            image={image}
-                            addMessage={addMessageSwitch}
-                            handleAddProductsToCombo={handleAddProductsToCombo}
-                          
-                            
-                        />;
-                    })}
-                    <div className="containerProg">
-
-                        <div onClick={handleShowCreatedCombos} className="btn-float" >Combos creados</div>
-                        {
-                            productType === 'Nintendo Switch Accesories' ?
-                                <div onClick={handleShowCreatedCombos} className="btn-float" >Finalizar</div>
-                                :
-                                <div onClick={onContinueBtn} className="btn-float" >Continuar</div>
-
-                        }
+                    </div>
+                    <div className="summary">
+                        <Summary
+                            combos={combo}
+                        ></Summary>
                     </div>
                 </div>
+                <div className="container">
+       
+                    <ComboContainer
+                        onAdd={handleAddCombo}
+                        combo={combo}
+                        editCombo={editCombo}
+                        changeCount={changeProductCount}
+                        onConfirm={handleConfirmCombo}
+                        addMessage={addMessage}
+                        changeName={changeName}
+                        handleDeleteProduct={handleDeleteProductsToCombo}
+                        handleEditCombo={handleEditCombo}
+                        isEdit={isEdit}
+                        handleDeleteCombo={handleDeleteCombo}
+                        handleDeleteEditCombo={handleDeleteEditCombo}
+                        
 
-            </div>
+                    >
 
-            <ClientModal
-                visible={showModal}
-                onAddName={handleAddName}
-            ></ClientModal>
-            <CreatedCombos
-                visible={showCreatedCombos}
-                onCloseWindow={handleCloseWindowFromCreatedCombos}
-            ></CreatedCombos>
-        </HashRouter>
+                    </ComboContainer>
 
-    </main>);
+                    <div className="containerProducts">
+
+                        {productFiltered.map(({ type, name, price, id, image }) => {
+
+                            return <NintendoSwitchProduct
+                                id={id}
+                                key={id}
+                                type={type}
+                                name={name}
+                                price={price}
+                                image={image}
+                                addMessage={addMessageSwitch}
+                                handleAddProductsToCombo={handleAddProductsToCombo}
+                            
+                                
+                            />;
+                        })}
+                        <div className="containerProg">
+
+                            <div onClick={handleShowCreatedCombos} className="btn-float" >Combos creados</div>
+                            {
+                                productType === 'Nintendo Switch Accesories' ?
+                                    <div onClick={handleShowCreatedCombos} className="btn-float" >Finalizar</div>
+                                    :
+                                    <div onClick={onContinueBtn} className="btn-float" >Continuar</div>
+
+                            }
+                        </div>
+                    </div>
+
+                </div>
+
+                <ClientModal
+                    visible={showModal}
+                    onAddName={handleAddName}
+                ></ClientModal>
+                <CreatedCombos
+                    visible={showCreatedCombos}
+                    onCloseWindow={handleCloseWindowFromCreatedCombos}
+                    combos={combo}
+                ></CreatedCombos>
+            </HashRouter>
+                           
+        </main>);
 }

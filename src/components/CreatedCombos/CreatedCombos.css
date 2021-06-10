@@ -83,6 +83,9 @@
     height: 85%;
     overflow: auto;
 }
+.titleParagrafCreated--noCombo{
+    justify-content: center;
+}
 
 .closeComboCreated{
     display: flex;

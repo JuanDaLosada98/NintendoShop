@@ -10,16 +10,22 @@ interface ComboContainerProps {
     onConfirm?: () => void;
     combo: ComboProps[];
     editCombo: ComboProps | null;
+    changeCount: Function;
     addMessage: boolean;
     changeName: () => void;
     handleDeleteProduct?: (product: productNintendo) => void
+    handleEditCombo?: (combo: ComboProps) => void
+    handleDeleteCombo?: (combo: ComboProps) => void
+    handleDeleteEditCombo?: (combo: ComboProps) => void
+    isEdit?: boolean;
+    setAddMessage?: (set: boolean) => void
 
 }
 
 
 
-export const ComboContainer: React.FC<ComboContainerProps> = ({ onAdd, combo, editCombo, onConfirm, addMessage, changeName, handleDeleteProduct }) => {
-    console.log(combo, editCombo);
+export const ComboContainer: React.FC<ComboContainerProps> = ({ onAdd, combo, editCombo, onConfirm, addMessage, changeName, handleDeleteProduct, changeCount, handleEditCombo, isEdit, handleDeleteCombo, handleDeleteEditCombo, setAddMessage}) => {
+   /*  console.log(combo, editCombo); */
     return (
         <div className="comboContainer">
             {addMessage &&
@@ -30,7 +36,7 @@ export const ComboContainer: React.FC<ComboContainerProps> = ({ onAdd, combo, ed
             {editCombo && <React.Fragment>
 
                 <Combo
-
+                    changeCount={changeCount}
                     id={editCombo.id}
                     comboTotal={editCombo.comboTotal}
                     client={editCombo.client}
@@ -39,6 +45,8 @@ export const ComboContainer: React.FC<ComboContainerProps> = ({ onAdd, combo, ed
                     changeName={changeName}
                     products={editCombo.products}
                     handleDeleteProduct={handleDeleteProduct}
+                    isEdit={isEdit}
+                    handleDeleteCombo={handleDeleteEditCombo}
 
 
                 ></Combo>
@@ -56,7 +64,9 @@ export const ComboContainer: React.FC<ComboContainerProps> = ({ onAdd, combo, ed
                     client={client}
                     confirm={confirm}
                     products={products}
-                
+                    handleEditCombo={handleEditCombo}
+                    isEdit={isEdit}
+                    handleDeleteCombo={handleDeleteCombo}
                    
 
 

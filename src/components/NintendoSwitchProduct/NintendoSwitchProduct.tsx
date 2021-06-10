@@ -1,7 +1,6 @@
 import React from 'react';
 import { productNintendo } from '../../containers/App/App';
 import { ImageSrcProduct } from '../../utils/ImageSrcProduct';
-import { Count } from '../Count/Count';
 
 import './NintendoSwitchProduct.css';
 

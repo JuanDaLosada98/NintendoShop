@@ -44,7 +44,6 @@
 }
 .emptyCombo{
     display: flex;
-    width: 220px;
     height: 5px;
     align-items: center;
     justify-content: center;

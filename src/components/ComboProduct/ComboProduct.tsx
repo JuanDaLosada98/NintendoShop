@@ -8,33 +8,34 @@ import { productNintendo } from '../../containers/App/App';
 
 export type ComboProductProps = Omit<NintendoSwitchPoductProps, 'joyConSet' | 'joyConL' | 'joyConR' | 'addMessage' | 'createdCombos' | 'numberOfProducts'>;
 export type product = productNintendo & {
+    changeCount?: Function;
     product?: string;
     confirm?: boolean,
     handleDeleteProduct?: (product: productNintendo) => void
-    
 }
-export const ComboProduct: React.FC<product> = ({ name, product, image, confirm, price, handleDeleteProduct, type, id }) => {
+export const ComboProduct: React.FC<product> = ({ name, product, image, confirm, price, handleDeleteProduct, type, id, changeCount, count }) => {
     const imageSrc = ImageSrcProduct(product);
-    const [ count, setCount ] = React.useState(1);
- 
-    var temporalCount: number;
-
+/*     const [ localCount, setlocalCount ] = React.useState(count!); */
 
      const handleDecrease = () => {
-      setCount(count - 1);
-      temporalCount=count-1;
-      if((temporalCount) === 0){
-        
-      }
+         
+        if(!(count === 1)){
+            changeCount!(name, price, -1);
+            /* setlocalCount(count!); */
+        } else {
+            delet();
+        }
     }
+
     const handleIncrease = () => {
-      setCount(count + 1);
+        changeCount!(name, price, 1);
+        /* setlocalCount(count!); */
     }
 
     const delet = () => {
         if (!!handleDeleteProduct) {
             handleDeleteProduct({
-                id, name, price, image, type,
+                id, name, price, image, type, count
             })
         }
     }
@@ -56,7 +57,7 @@ export const ComboProduct: React.FC<product> = ({ name, product, image, confirm,
 
                 <div className="counterComboProduct">
                     <Count
-                        count={count}
+                        count={count!}
                         onDecrease={handleDecrease}
                         onIncrease={handleIncrease}
                         confirm={confirm}
@@ -70,7 +71,8 @@ export const ComboProduct: React.FC<product> = ({ name, product, image, confirm,
                 <img src="/images/data/mariocoin.png" alt="" className="coinComboProductImg" />
             </div>
             <div className="priceComboProduct">
-                ${price}
+                
+                ${price*count!}
             </div>
 
         </div>

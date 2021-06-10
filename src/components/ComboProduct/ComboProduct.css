@@ -161,7 +161,7 @@
 }
 .priceComboProduct{
    
-    width: 37.7px;
+    width: fit-content;
     background-color: white;
     border-radius: 8px;
     padding: 2px;
